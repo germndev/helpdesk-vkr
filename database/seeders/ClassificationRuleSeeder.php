@@ -1,0 +1,245 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\ClassificationRule;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+
+class ClassificationRuleSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $support = User::query()->where('login', 'support')->first();
+        $admin = User::query()->where('login', 'admin')->first();
+
+        $responsiblesAll = array_values(array_filter([$support?->id, $admin?->id]));
+        $responsiblesSupportOnly = array_values(array_filter([$support?->id]));
+
+        $definitions = [
+            [
+                'name' => '1С',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => '1с', 'weight' => 5],
+                    ['phrase' => 'документ', 'weight' => 4],
+                    ['phrase' => 'проводка', 'weight' => 4],
+                    ['phrase' => 'обмен', 'weight' => 5],
+                    ['phrase' => 'синхронизация', 'weight' => 4],
+                    ['phrase' => 'база', 'weight' => 5],
+                    ['phrase' => 'конфигурация', 'weight' => 4],
+                    ['phrase' => 'закрытие месяца', 'weight' => 5],
+                    ['phrase' => 'счет-фактура', 'weight' => 4],
+                    ['phrase' => 'отчет', 'weight' => 3],
+                    ['phrase' => 'остатки', 'weight' => 3],
+                    ['phrase' => 'касса', 'weight' => 3],
+                    ['phrase' => 'чек', 'weight' => 3],
+                    ['phrase' => 'фнс', 'weight' => 3],
+                    ['phrase' => 'банк-клиент', 'weight' => 4],
+                    ['phrase' => 'api 1c', 'weight' => 4],
+                    ['phrase' => 'excel import', 'weight' => 2],
+                    ['phrase' => 'склад', 'weight' => 2],
+                    ['phrase' => 'номенклатура', 'weight' => 2],
+                    ['phrase' => 'контрагент', 'weight' => 2],
+                ],
+            ],
+            [
+                'name' => 'Доступы',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'логин', 'weight' => 5],
+                    ['phrase' => 'пароль', 'weight' => 5],
+                    ['phrase' => 'авторизация', 'weight' => 5],
+                    ['phrase' => 'доступ', 'weight' => 5],
+                    ['phrase' => 'права', 'weight' => 4],
+                    ['phrase' => 'блокировка', 'weight' => 4],
+                    ['phrase' => 'аккаунт', 'weight' => 4],
+                    ['phrase' => 'sso', 'weight' => 3],
+                    ['phrase' => 'vpn', 'weight' => 4],
+                    ['phrase' => '2fa', 'weight' => 3],
+                    ['phrase' => 'ldap', 'weight' => 3],
+                    ['phrase' => 'ad', 'weight' => 3],
+                    ['phrase' => 'почта', 'weight' => 3],
+                    ['phrase' => 'crm ??????', 'weight' => 3],
+                    ['phrase' => '1c ??????', 'weight' => 3],
+                    ['phrase' => 'папка', 'weight' => 3],
+                    ['phrase' => 'роль', 'weight' => 3],
+                    ['phrase' => 'разблокировка', 'weight' => 4],
+                    ['phrase' => 'сброс пароля', 'weight' => 4],
+                    ['phrase' => 'token', 'weight' => 2],
+                ],
+            ],
+            [
+                'name' => 'CRM',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'crm', 'weight' => 5],
+                    ['phrase' => 'сделка', 'weight' => 5],
+                    ['phrase' => 'лид', 'weight' => 4],
+                    ['phrase' => 'воронка', 'weight' => 4],
+                    ['phrase' => 'контакт', 'weight' => 3],
+                    ['phrase' => 'карточка', 'weight' => 3],
+                    ['phrase' => 'pipeline', 'weight' => 4],
+                    ['phrase' => 'стадия', 'weight' => 3],
+                    ['phrase' => 'задача', 'weight' => 3],
+                    ['phrase' => 'webhook', 'weight' => 4],
+                    ['phrase' => 'интеграция', 'weight' => 4],
+                    ['phrase' => 'дубликат', 'weight' => 3],
+                    ['phrase' => 'комментарий', 'weight' => 2],
+                    ['phrase' => 'фильтр', 'weight' => 2],
+                    ['phrase' => 'экспорт', 'weight' => 2],
+                    ['phrase' => 'импорт', 'weight' => 2],
+                    ['phrase' => 'api crm', 'weight' => 4],
+                    ['phrase' => 'менеджер', 'weight' => 2],
+                    ['phrase' => 'клиент', 'weight' => 2],
+                    ['phrase' => 'канбан', 'weight' => 3],
+                ],
+            ],
+            [
+                'name' => 'Системное администрирование',
+                'responsibles' => ($responsiblesSupportOnly ?: $responsiblesAll),
+                'triggers' => [
+                    ['phrase' => 'компьютер', 'weight' => 5],
+                    ['phrase' => 'пк', 'weight' => 4],
+                    ['phrase' => 'ноутбук', 'weight' => 4],
+                    ['phrase' => 'windows', 'weight' => 4],
+                    ['phrase' => 'интернет', 'weight' => 5],
+                    ['phrase' => 'wi-fi', 'weight' => 4],
+                    ['phrase' => 'dns', 'weight' => 4],
+                    ['phrase' => 'dhcp', 'weight' => 3],
+                    ['phrase' => 'vpn', 'weight' => 3],
+                    ['phrase' => 'rdp', 'weight' => 4],
+                    ['phrase' => 'принтер', 'weight' => 3],
+                    ['phrase' => 'сканер', 'weight' => 2],
+                    ['phrase' => 'сервер', 'weight' => 4],
+                    ['phrase' => 'диск', 'weight' => 3],
+                    ['phrase' => 'сеть', 'weight' => 3],
+                    ['phrase' => 'драйвер', 'weight' => 2],
+                    ['phrase' => 'обновление', 'weight' => 2],
+                    ['phrase' => 'перезагрузка', 'weight' => 2],
+                    ['phrase' => 'синий экран', 'weight' => 5],
+                    ['phrase' => '?????? 0x', 'weight' => 3],
+                ],
+            ],
+            [
+                'name' => 'Производство',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'линия', 'weight' => 5],
+                    ['phrase' => 'цех', 'weight' => 5],
+                    ['phrase' => 'станок', 'weight' => 4],
+                    ['phrase' => 'mes', 'weight' => 5],
+                    ['phrase' => 'scada', 'weight' => 4],
+                    ['phrase' => 'датчик', 'weight' => 3],
+                    ['phrase' => 'контроллер', 'weight' => 3],
+                    ['phrase' => 'этикетка', 'weight' => 3],
+                    ['phrase' => 'маршрут', 'weight' => 3],
+                    ['phrase' => 'смена', 'weight' => 4],
+                    ['phrase' => 'простой', 'weight' => 5],
+                    ['phrase' => 'партия', 'weight' => 3],
+                    ['phrase' => 'выпуск', 'weight' => 4],
+                    ['phrase' => 'наряд', 'weight' => 3],
+                    ['phrase' => 'терминал', 'weight' => 4],
+                    ['phrase' => 'планшет', 'weight' => 2],
+                    ['phrase' => 'штрихкод', 'weight' => 2],
+                    ['phrase' => 'качество', 'weight' => 2],
+                    ['phrase' => 'andon', 'weight' => 2],
+                    ['phrase' => 'plc ??????????', 'weight' => 3],
+                ],
+            ],
+            [
+                'name' => 'Бухгалтерия',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'бухгалтерия', 'weight' => 4],
+                    ['phrase' => 'ндс', 'weight' => 4],
+                    ['phrase' => 'налог', 'weight' => 4],
+                    ['phrase' => 'проводка', 'weight' => 4],
+                    ['phrase' => 'акт', 'weight' => 3],
+                    ['phrase' => 'счет', 'weight' => 3],
+                    ['phrase' => 'счет-фактура', 'weight' => 4],
+                    ['phrase' => 'платежка', 'weight' => 5],
+                    ['phrase' => 'выписка', 'weight' => 3],
+                    ['phrase' => 'банк', 'weight' => 3],
+                    ['phrase' => 'зарплата', 'weight' => 4],
+                    ['phrase' => 'аванс', 'weight' => 2],
+                    ['phrase' => 'закрытие месяца', 'weight' => 5],
+                    ['phrase' => 'отчетность', 'weight' => 3],
+                    ['phrase' => 'оборотка', 'weight' => 4],
+                    ['phrase' => 'дебет', 'weight' => 2],
+                    ['phrase' => 'кредит', 'weight' => 2],
+                    ['phrase' => 'сверка', 'weight' => 3],
+                    ['phrase' => 'эдо', 'weight' => 3],
+                    ['phrase' => 'api ????', 'weight' => 3],
+                ],
+            ],
+            [
+                'name' => 'Интернет-магазин',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'интернет-магазин', 'weight' => 5],
+                    ['phrase' => 'сайт', 'weight' => 4],
+                    ['phrase' => 'каталог', 'weight' => 3],
+                    ['phrase' => 'товар', 'weight' => 3],
+                    ['phrase' => 'карточка товара', 'weight' => 3],
+                    ['phrase' => 'корзина', 'weight' => 5],
+                    ['phrase' => 'заказ', 'weight' => 5],
+                    ['phrase' => 'checkout', 'weight' => 5],
+                    ['phrase' => 'оплата', 'weight' => 5],
+                    ['phrase' => 'доставка', 'weight' => 4],
+                    ['phrase' => 'промокод', 'weight' => 3],
+                    ['phrase' => 'остатки', 'weight' => 3],
+                    ['phrase' => 'цена', 'weight' => 3],
+                    ['phrase' => 'скидка', 'weight' => 3],
+                    ['phrase' => 'cms', 'weight' => 3],
+                    ['phrase' => 'битрикс', 'weight' => 3],
+                    ['phrase' => 'api ?????', 'weight' => 4],
+                    ['phrase' => 'email ???????????', 'weight' => 2],
+                    ['phrase' => 'sms ???????????', 'weight' => 2],
+                    ['phrase' => 'фид', 'weight' => 2],
+                ],
+            ],
+            [
+                'name' => 'Розница',
+                'responsibles' => $responsiblesAll,
+                'triggers' => [
+                    ['phrase' => 'розница', 'weight' => 4],
+                    ['phrase' => 'касса', 'weight' => 5],
+                    ['phrase' => 'чек', 'weight' => 5],
+                    ['phrase' => 'смена', 'weight' => 5],
+                    ['phrase' => 'эквайринг', 'weight' => 4],
+                    ['phrase' => 'терминал', 'weight' => 4],
+                    ['phrase' => 'pos', 'weight' => 4],
+                    ['phrase' => 'frontol', 'weight' => 4],
+                    ['phrase' => 'r_keeper', 'weight' => 4],
+                    ['phrase' => 'офд', 'weight' => 4],
+                    ['phrase' => 'товар', 'weight' => 3],
+                    ['phrase' => 'штрихкод', 'weight' => 3],
+                    ['phrase' => 'возврат', 'weight' => 3],
+                    ['phrase' => 'скидка', 'weight' => 2],
+                    ['phrase' => 'цена', 'weight' => 2],
+                    ['phrase' => 'остатки', 'weight' => 2],
+                    ['phrase' => 'инвентаризация', 'weight' => 2],
+                    ['phrase' => 'продажа', 'weight' => 3],
+                    ['phrase' => 'x-?????', 'weight' => 3],
+                    ['phrase' => 'z-?????', 'weight' => 3],
+                ],
+            ],
+        ];
+
+        ClassificationRule::query()->delete();
+
+        foreach ($definitions as $definition) {
+            $rule = ClassificationRule::query()->create([
+                'name' => $definition['name'],
+                'type' => 'category',
+                'target_value' => $definition['name'],
+                'assigned_to' => null,
+                'is_active' => true,
+            ]);
+
+            $rule->triggers()->createMany($definition['triggers']);
+            $rule->responsibles()->sync($definition['responsibles']);
+        }
+    }
+}
