@@ -27,6 +27,10 @@
                             <span>{{ $priority }}</span>
                         </label>
                     @endforeach
+                    <label class="multi-filter-option">
+                        <input type="checkbox" name="priority[]" value="__missing" @checked(collect($filters['priority'])->contains('__missing'))>
+                        <span>Не определен</span>
+                    </label>
                 </div>
             </div>
 

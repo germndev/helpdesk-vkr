@@ -45,6 +45,7 @@
     @php
         $priority = session('created_ticket_priority', 'Средний');
         $priorityOrder = ['Низкий', 'Средний', 'Высокий', 'Критический'];
+        $priorityClasses = ['low', 'medium', 'high', 'critical'];
         $activePriorityIndex = array_search($priority, $priorityOrder, true);
         $activePriorityIndex = $activePriorityIndex === false ? 1 : $activePriorityIndex;
     @endphp
@@ -55,7 +56,7 @@
             <div class="fw-semibold">{{ $priority }}</div>
             <div class="priority-meter mt-3" aria-hidden="true">
                 @foreach($priorityOrder as $segmentIndex => $segment)
-                    <span class="priority-meter-segment {{ $segmentIndex <= $activePriorityIndex ? 'active '.\Illuminate\Support\Str::slug($segment) : '' }}"></span>
+                    <span class="priority-meter-segment {{ $segmentIndex <= $activePriorityIndex ? 'active '.$priorityClasses[$segmentIndex] : '' }}"></span>
                 @endforeach
             </div>
             <button type="button" class="btn btn-dark px-4" data-success-close>Спасибо!</button>

@@ -438,19 +438,23 @@ body.helpdesk-body {
     border: 1px solid #adadad;
 }
 
-.priority-meter-segment.active.nizkii {
+.priority-meter-segment.active.nizkii,
+.priority-meter-segment.active.low {
     background: #8ad39a;
 }
 
-.priority-meter-segment.active.srednii {
+.priority-meter-segment.active.srednii,
+.priority-meter-segment.active.medium {
     background: #e7d36d;
 }
 
-.priority-meter-segment.active.vysokii {
+.priority-meter-segment.active.vysokii,
+.priority-meter-segment.active.high {
     background: #eca15d;
 }
 
-.priority-meter-segment.active.kriticheskii {
+.priority-meter-segment.active.kriticheskii,
+.priority-meter-segment.active.critical {
     background: #e26d6d;
 }
 
@@ -1474,7 +1478,9 @@ body.helpdesk-body {
 }
 
 body.helpdesk-body {
-    background: radial-gradient(1200px 600px at 0% -10%, #ffffff 0%, var(--modern-bg-1) 48%, var(--modern-bg-2) 100%);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(238, 238, 238, 0.28)),
+        url("/assets/images/app-background.jpg") center / cover fixed no-repeat;
     color: var(--modern-text);
 }
 
@@ -1493,7 +1499,8 @@ body.helpdesk-body {
 .helpdesk-sidebar {
     border-radius: 20px;
     border: 1px solid var(--modern-border);
-    background: linear-gradient(180deg, #fafafa 0%, #efefef 100%);
+    background: linear-gradient(180deg, rgba(250, 250, 250, 0.9) 0%, rgba(239, 239, 239, 0.94) 100%);
+    backdrop-filter: blur(8px);
     box-shadow: var(--modern-shadow-2);
 }
 
@@ -1534,8 +1541,8 @@ body.helpdesk-body {
 .content-card-scroll {
     border-radius: 20px;
     border: 1px solid var(--modern-border);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(242, 242, 242, 0.86) 100%);
-    backdrop-filter: blur(4px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(242, 242, 242, 0.9) 100%);
+    backdrop-filter: blur(8px);
     box-shadow: var(--modern-shadow-2);
 }
 
@@ -1782,19 +1789,23 @@ textarea.form-control {
     border-right: 0;
 }
 
-.priority-meter-segment.active.nizkii {
+.priority-meter-segment.active.nizkii,
+.priority-meter-segment.active.low {
     background: #8ad39a;
 }
 
-.priority-meter-segment.active.srednii {
+.priority-meter-segment.active.srednii,
+.priority-meter-segment.active.medium {
     background: #e7d36d;
 }
 
-.priority-meter-segment.active.vysokii {
+.priority-meter-segment.active.vysokii,
+.priority-meter-segment.active.high {
     background: #eca15d;
 }
 
-.priority-meter-segment.active.kriticheskii {
+.priority-meter-segment.active.kriticheskii,
+.priority-meter-segment.active.critical {
     background: #e26d6d;
 }
 
@@ -1837,13 +1848,13 @@ textarea.form-control {
 
 .content-card,
 .content-card-scroll {
-    background: linear-gradient(180deg, #f8f8f8 0%, #efefef 100%) !important;
-    backdrop-filter: none !important;
+    background: linear-gradient(180deg, rgba(248, 248, 248, 0.86) 0%, rgba(239, 239, 239, 0.92) 100%) !important;
+    backdrop-filter: blur(8px) !important;
 }
 
 .helpdesk-shell {
     gap: 0 !important;
-    background: #efefef;
+    background: transparent;
 }
 
 .helpdesk-sidebar {
@@ -1941,4 +1952,62 @@ body.sidebar-resizing {
     .sidebar-resizer {
         display: none;
     }
+}
+
+body.helpdesk-body,
+.helpdesk-auth-main,
+.helpdesk-shell {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(232, 232, 232, 0.16)),
+        var(--app-background-image) center / cover fixed no-repeat !important;
+}
+
+body.helpdesk-body {
+    position: relative;
+    isolation: isolate;
+}
+
+body.helpdesk-body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(230, 230, 230, 0.12)),
+        var(--app-background-image) center / cover no-repeat;
+    filter: contrast(1.08);
+    pointer-events: none;
+}
+
+.helpdesk-shell {
+    gap: 12px !important;
+    padding: 12px;
+}
+
+.helpdesk-sidebar {
+    background:
+        linear-gradient(180deg, rgba(248, 248, 248, 0.86), rgba(238, 238, 238, 0.9)),
+        var(--app-background-image) center / cover fixed no-repeat !important;
+    backdrop-filter: blur(8px);
+}
+
+.content-card,
+.content-card-scroll {
+    background:
+        linear-gradient(180deg, rgba(248, 248, 248, 0.84), rgba(239, 239, 239, 0.9)),
+        var(--app-background-image) center / cover fixed no-repeat !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.ticket-detail-main,
+.ticket-chat-side,
+.ticket-form-wrap,
+.auth-card,
+.classification-triggers-panel,
+.stat-card,
+.records-table-wrap {
+    background:
+        linear-gradient(180deg, rgba(248, 248, 248, 0.9), rgba(240, 240, 240, 0.94)),
+        var(--app-background-image) center / cover fixed no-repeat !important;
+    backdrop-filter: blur(6px);
 }

@@ -30,6 +30,13 @@ class SupportTicketController extends Controller
 
         $dateSort = $filters['date_sort'] ?? 'desc';
 
+        $selectedPriorities = collect($filters['priority'] ?? []);
+        $hasMissingPriorityFilter = $selectedPriorities->contains('__missing');
+        $selectedDefinedPriorities = $selectedPriorities
+            ->reject(fn ($priority) => $priority === '__missing')
+            ->values()
+            ->all();
+
         $tickets = Ticket::query()
             ->with('user')
             ->where(function ($query) use ($user) {
@@ -37,7 +44,21 @@ class SupportTicketController extends Controller
                     ->orWhereNull('assigned_to');
             })
             ->when(! empty($filters['category']), fn ($q) => $q->whereIn('category', $filters['category']))
-            ->when(! empty($filters['priority']), fn ($q) => $q->whereIn('priority', $filters['priority']))
+            ->when($selectedPriorities->isNotEmpty(), function ($q) use ($selectedDefinedPriorities, $hasMissingPriorityFilter) {
+                $q->where(function ($priorityQuery) use ($selectedDefinedPriorities, $hasMissingPriorityFilter) {
+                    if (! empty($selectedDefinedPriorities)) {
+                        $priorityQuery->whereIn('priority', $selectedDefinedPriorities);
+                    }
+
+                    if ($hasMissingPriorityFilter) {
+                        $method = empty($selectedDefinedPriorities) ? 'where' : 'orWhere';
+                        $priorityQuery->{$method}(function ($inner) {
+                            $inner->whereNull('priority')
+                                ->orWhere('priority', '');
+                        });
+                    }
+                });
+            })
             ->when(! empty($filters['status']), fn ($q) => $q->whereIn('status', $filters['status']))
             ->orderBy('created_at', $dateSort)
             ->orderByDesc('id')
@@ -65,15 +86,7 @@ class SupportTicketController extends Controller
                 ->distinct()
                 ->orderBy('category')
                 ->pluck('category'),
-            'priorities' => Ticket::query()
-                ->whereNotNull('priority')
-                ->where(function ($query) use ($user) {
-                    $query->where('assigned_to', $user->id)
-                        ->orWhereNull('assigned_to');
-                })
-                ->distinct()
-                ->orderBy('priority')
-                ->pluck('priority'),
+            'priorities' => $this->getPriorityOptions(),
             'filters' => array_merge([
                 'category' => [],
                 'priority' => [],
@@ -108,7 +121,7 @@ class SupportTicketController extends Controller
                 Ticket::STATUS_RESOLVED,
                 Ticket::STATUS_CLOSED,
             ])],
-            'priority' => ['nullable', 'string', 'max:255'],
+            'priority' => ['nullable', Rule::in(['Низкий', 'Средний', 'Высокий', 'Критический'])],
             'category' => ['nullable', 'string', 'max:255'],
             'needs_manual_review' => ['required', 'boolean'],
         ]);
@@ -139,6 +152,11 @@ class SupportTicketController extends Controller
             ['type' => 'link', 'label' => 'Главная', 'icon' => 'home.svg', 'route' => 'dashboard', 'active' => $active === 'dashboard'],
             ['type' => 'link', 'label' => 'Заявки', 'icon' => 'requests.svg', 'route' => 'support.tickets.index', 'active' => $active === 'tickets'],
         ];
+    }
+
+    private function getPriorityOptions(): array
+    {
+        return ['Низкий', 'Средний', 'Высокий', 'Критический'];
     }
 
     private function guardAssignedTicket(Request $request, Ticket $ticket): void

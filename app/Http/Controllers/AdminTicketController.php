@@ -31,13 +31,34 @@ class AdminTicketController extends Controller
             'priority_missing' => ['nullable', 'boolean'],
         ]);
 
+        $selectedPriorities = collect($filters['priority'] ?? []);
+        $hasMissingPriorityFilter = $selectedPriorities->contains('__missing') || ($filters['priority_missing'] ?? false);
+        $selectedDefinedPriorities = $selectedPriorities
+            ->reject(fn ($priority) => $priority === '__missing')
+            ->values()
+            ->all();
+
         $ticketsQuery = Ticket::query()
             ->with(['user', 'assignee'])
             ->when(! empty($filters['assigned_to']), fn ($q) => $q->whereIn('assigned_to', $filters['assigned_to']))
             ->when(! empty($filters['category']), fn ($q) => $q->whereIn('category', $filters['category']))
-            ->when(! empty($filters['priority']), fn ($q) => $q->whereIn('priority', $filters['priority']))
+            ->when($selectedPriorities->isNotEmpty(), function ($q) use ($selectedDefinedPriorities, $hasMissingPriorityFilter) {
+                $q->where(function ($priorityQuery) use ($selectedDefinedPriorities, $hasMissingPriorityFilter) {
+                    if (! empty($selectedDefinedPriorities)) {
+                        $priorityQuery->whereIn('priority', $selectedDefinedPriorities);
+                    }
+
+                    if ($hasMissingPriorityFilter) {
+                        $method = empty($selectedDefinedPriorities) ? 'where' : 'orWhere';
+                        $priorityQuery->{$method}(function ($inner) {
+                            $inner->whereNull('priority')
+                                ->orWhere('priority', '');
+                        });
+                    }
+                });
+            })
             ->when(! empty($filters['status']), fn ($q) => $q->whereIn('status', $filters['status']))
-            ->when(($filters['priority_missing'] ?? false), function ($q) {
+            ->when(($filters['priority_missing'] ?? false) && $selectedPriorities->isEmpty(), function ($q) {
                 $q->where(function ($inner) {
                     $inner->whereNull('priority')
                         ->orWhere('priority', '');
@@ -63,11 +84,7 @@ class AdminTicketController extends Controller
             ->orderBy('category')
             ->pluck('category');
 
-        $priorities = Ticket::query()
-            ->whereNotNull('priority')
-            ->distinct()
-            ->orderBy('priority')
-            ->pluck('priority');
+        $priorities = $this->getPriorityOptions();
 
         if ($request->ajax()) {
             return response()->json([
@@ -125,7 +142,7 @@ class AdminTicketController extends Controller
                 Ticket::STATUS_RESOLVED,
                 Ticket::STATUS_CLOSED,
             ])],
-            'priority' => ['nullable', 'string', 'max:255'],
+            'priority' => ['nullable', Rule::in(['Низкий', 'Средний', 'Высокий', 'Критический'])],
             'category' => ['nullable', 'string', 'max:255'],
             'assigned_to' => ['nullable', 'integer', Rule::exists('users', 'id')],
             'needs_manual_review' => ['required', 'boolean'],
@@ -171,6 +188,11 @@ class AdminTicketController extends Controller
             ['type' => 'link', 'label' => 'Пользователи', 'icon' => 'user.svg', 'route' => 'admin.users.index', 'active' => $active === 'users'],
             ['type' => 'link', 'label' => 'Правила классификации', 'icon' => 'categories.svg', 'route' => 'admin.classification-rules.index', 'active' => $active === 'classification-rules'],
         ];
+    }
+
+    private function getPriorityOptions(): array
+    {
+        return ['Низкий', 'Средний', 'Высокий', 'Критический'];
     }
 
     private function getAvailableCategories()

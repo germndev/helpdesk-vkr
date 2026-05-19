@@ -75,7 +75,13 @@
 
                 <div class="ticket-field">
                     <label class="ticket-field-label" for="priority">Приоритет</label>
-                    <input id="priority" name="priority" type="text" class="form-control ticket-input-static" value="{{ old('priority', $ticket->priority) }}" data-inline-edit-input disabled>
+                    <select id="priority" name="priority" class="form-select ticket-input-static" data-inline-edit-input disabled>
+                        <option value="" @selected(old('priority', $ticket->priority) === null || old('priority', $ticket->priority) === '')>Не определен</option>
+                        <option value="Низкий" @selected(old('priority', $ticket->priority) === 'Низкий')>Низкий</option>
+                        <option value="Средний" @selected(old('priority', $ticket->priority) === 'Средний')>Средний</option>
+                        <option value="Высокий" @selected(old('priority', $ticket->priority) === 'Высокий')>Высокий</option>
+                        <option value="Критический" @selected(old('priority', $ticket->priority) === 'Критический')>Критический</option>
+                    </select>
                 </div>
 
                 <div class="ticket-field">
