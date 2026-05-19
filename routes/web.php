@@ -10,6 +10,18 @@ use App\Http\Controllers\TicketMessageController;
 use App\Http\Controllers\UserTicketController;
 use Illuminate\Support\Facades\Route;
 
+Route::match(['get', 'post'], '/bitrix/install', function () {
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('bitrix.install');
+
+Route::match(['get', 'post'], '/bitrix/handler', function () {
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+})->name('bitrix.handler');
+
 Route::get('/', function () {
     return auth()->check()
         ? redirect()->route('dashboard')
